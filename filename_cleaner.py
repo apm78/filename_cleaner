@@ -19,13 +19,13 @@ def check_filename(filename):
 def new_filename(filename):
     return re.sub(
         NON_ASCII_REGEX, '_', filename.replace(
-            'ß', 'ss').replace(
-            'ä', 'ae').replace(
-            'Ä', 'Ae').replace(
-            'ö', 'oe').replace(
-            'Ö', 'Oe').replace(
-            'ü', 'ue').replace(
-            'Ü', 'Ue'))
+            '\u00df', 'ss').replace(
+            '\u00e4', 'ae').replace(
+            '\u00c4', 'Ae').replace(
+            '\u00f6', 'oe').replace(
+            '\u00d6', 'Oe').replace(
+            '\u00fc', 'ue').replace(
+            '\u00dc', 'Ue'))
 
 
 def fix_file_or_dir_name(filename, dirpath, dry_run, force):
