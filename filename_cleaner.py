@@ -29,7 +29,6 @@ def new_filename(filename):
 
 
 def fix_file_or_dir_name(filename, dirpath, dry_run, force):
-    logging.info(f'check file or directory {filename}')
     if check_filename(filename):
         new_name = new_filename(filename)
         full_file_path = os.path.join(dirpath, filename)
@@ -47,11 +46,8 @@ def fix_file_or_dir_name(filename, dirpath, dry_run, force):
 def fix_illegal_filenames(root_dir, dry_run, force):
     for dirpath, dirnames, filenames in os.walk(root_dir):
         abs_path_dir = os.path.abspath(dirpath)
-        logging.info(f'check directory {abs_path_dir}...')
         for filename in filenames:
             fix_file_or_dir_name(filename, abs_path_dir, dry_run, force)
-        # for dirname in dirnames:
-        #     fix_file_or_dir_name(dirname, abs_path_dir, dry_run)
         os.path.basename(abs_path_dir)
         fix_file_or_dir_name(os.path.basename(abs_path_dir), os.path.dirname(abs_path_dir), dry_run, force)
 
@@ -65,8 +61,6 @@ if __name__ == '__main__':
     parser.add_argument('-d', '--dryrun', help='traverse the directory without renaming', type=bool, default=False)
     parser.add_argument('-f', '--force', help='force replace even with duplicates', type=bool, default=False)
     args = parser.parse_args()
-    # logging.info(f'Root directory: {args.root}')
-    # logging.info(f'Dry run: {args.dryrun}')
     if not os.path.exists(args.root):
         logging.error(f'The root directory {args.root} does not exist')
         sys.exit(1)
