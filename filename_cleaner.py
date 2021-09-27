@@ -8,15 +8,13 @@ import os.path
 import re
 import sys
 
-DEFAULT_ROOT = '.'
 NON_ASCII_REGEX = re.compile(r'[^\u0000-\u007f]')
-
 
 def check_filename(filename):
     return re.search(NON_ASCII_REGEX, filename) is not None
 
 
-def new_filename(filename):
+def to_ascii(filename):
     return re.sub(
         NON_ASCII_REGEX, '_', filename.replace(
             '\u00df', 'ss').replace(
@@ -25,12 +23,35 @@ def new_filename(filename):
             '\u00f6', 'oe').replace(
             '\u00d6', 'Oe').replace(
             '\u00fc', 'ue').replace(
-            '\u00dc', 'Ue'))
+            '\u00dc', 'Ue').replace(
+            '\u0308', 'e').replace(
+            'A\u0301', 'A').replace(
+            'Á', 'A').replace(
+            'E\u0301', 'E').replace(
+            'É', 'E').replace(
+            'I\u0301', 'I').replace(
+            'Í', 'I').replace(
+            'O\u0301', 'O').replace(
+            'Ó', 'O').replace(
+            'U\u0301', 'U').replace(
+            'Ú', 'U').replace(
+            'a\u0301', 'a').replace(
+            'á', 'a').replace(
+            'e\u0301', 'e').replace(
+            'é', 'e').replace(
+            'i\u0301', 'i').replace(
+            'í', 'i').replace(
+            'o\u0301', 'o').replace(
+            'ó', 'o').replace(
+            'u\u0301', 'u').replace(
+            'ú', 'u')
+        )
 
 
 def fix_file_or_dir_name(filename, dirpath, dry_run, force):
     if check_filename(filename):
-        new_name = new_filename(filename)
+        logging.info(f'{filename}: {[hex(ord(char)) for char in filename]}')
+        new_name = to_ascii(filename)
         full_file_path = os.path.join(dirpath, filename)
         full_new_file_path = os.path.join(dirpath, new_name)
         if dry_run:
@@ -57,7 +78,7 @@ if __name__ == '__main__':
                         format='%(asctime)s - %(message)s',
                         datefmt='%Y-%m-%d %H:%M:%S')
     parser = argparse.ArgumentParser(description='Replace non-ascii filename characters like umlauts')
-    parser.add_argument('root', help='root directory of the search and replace algorithm', default=DEFAULT_ROOT)
+    parser.add_argument('root', help='root directory of the search and replace algorithm')
     parser.add_argument('-d', '--dryrun', help='traverse the directory without renaming', type=bool, default=False)
     parser.add_argument('-f', '--force', help='force replace even with duplicates', type=bool, default=False)
     args = parser.parse_args()

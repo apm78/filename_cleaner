@@ -16,14 +16,17 @@ class TestFindFileWithNonAsciiName(unittest.TestCase):
         self.assertEqual(False,
                          cleaner.check_filename('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-+_&'))
 
-    def test_new_filename(self):
+    def test_to_ascii(self):
         self.assertEqual(
             'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-+_&',
-            cleaner.new_filename('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-+_&'))
+            cleaner.to_ascii('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-+_&'))
         self.assertEqual(
-            'AeOeUeaeoeuess_',
-            cleaner.new_filename('ÄÖÜäöüßé'))
-        self.assertEqual('toestFile.txt', cleaner.new_filename('töstFile.txt'))
+            'AeOeUeaeoeuessAEIOUaeiou',
+            cleaner.to_ascii('ÄÖÜäöüßÁÉÍÓÚáéíóú'))
+        self.assertEqual(
+            'AeOeUeaeoeueAEIOUaeiou',
+            cleaner.to_ascii('A\u0308O\u0308U\u0308a\u0308o\u0308u\u0308A\u0301E\u0301I\u0301O\u0301U\u0301a\u0301e\u0301i\u0301o\u0301u\u0301'))
+        self.assertEqual('toestFile.txt', cleaner.to_ascii('töstFile.txt'))
 
 
 if __name__ == '__main__':
